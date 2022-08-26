@@ -30,7 +30,7 @@ isspace(c : int) : int
 
 isreserved(c : int) : int
 {
-    return isspace(c) || c == ',' || c == 'λ' || c == '(' || c == ')';
+    return isspace(c) || c == ',' || c == 'λ' || c == '(' || c == ')' || c == '\\';
 }
 
 Lexer.peek(t : self ref Lexer) : int
@@ -44,10 +44,10 @@ Lexer.next(t : self ref Lexer) : ref Token
     if (t.pos == len t.buffer) return ref Token.EOL();
 
     case t.peek() {
-        ',' => t.pos++; return ref Token.Comma();
-        'λ' => t.pos++; return ref Token.Lambda();
-        '(' => t.pos++; return ref Token.Lparen();
-        ')' => t.pos++; return ref Token.Rparen();
+        ','         => t.pos++; return ref Token.Comma();
+        '\\' or 'λ' => t.pos++; return ref Token.Lambda();
+        '('         => t.pos++; return ref Token.Lparen();
+        ')'         => t.pos++; return ref Token.Rparen();
     }
 
     i₀ := t.pos; while (t.pos < len t.buffer && !isreserved(t.peek())) t.pos++;
